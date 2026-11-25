@@ -116,7 +116,7 @@ details summary{cursor:pointer;font-weight:600}
       <input id="royall" type="number" min="0" max="30" step="0.5" value="10" style="width:90px"> %
       <button class="btn" id="royapply">Apply</button>
       
-      <button class="btn" id="royreset">Reset to agreement</button>
+      <button class="btn" id="royreset">Reset to tracker rates</button>
     </div>
     <div id="roygrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px 18px"></div>
   </details>
@@ -178,7 +178,7 @@ function spanMonths(span) { let n = 0; for (const k in span) n += span[k][1] - s
 function addSpan(span, pid, m) { const i = MI(m), s = span[pid]; if (!s) span[pid] = [i, i]; else { s[0] = Math.min(s[0], i); s[1] = Math.max(s[1], i); } }
 const store = {get(k){try{return JSON.parse(localStorage.getItem(k));}catch(e){return null;}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
 function resetRates(){ S.rates = Object.fromEntries(DATA.map(d => [d.drug, DEFAULT_RATE(d)])); }
-resetRates(); Object.assign(S.rates, store.get('vc_rates') || {});
+resetRates(); Object.assign(S.rates, store.get('vc_rates_v3') || {});
 S.practices = store.get('vc_practices') || JSON.parse(JSON.stringify(DEFAULT_PRACTICES));
 S.overhead = Object.assign({}, DEFAULT_OVERHEAD, store.get('vc_overhead') || {});
 const overheadTotal = () => Object.values(S.overhead).reduce((s, v) => s + (+v || 0), 0);
@@ -636,11 +636,11 @@ function render() {
   const rg = document.getElementById('roygrid');
   const drawRoy = () => rg.replaceChildren(...DATA.slice().sort((a, b) => a.drug.localeCompare(b.drug)).map(d => {
     const i = el('input', {type:'number', min:0, max:30, step:0.5, value:S.rates[d.drug] ?? '', placeholder:isMixed(d.drug) ? '10/19' : '', title:isMixed(d.drug) ? 'Blank = 10% when billed under a specialty therapy, 19% otherwise' : '', style:'width:80px', 'aria-label':'Royalty % for ' + d.drug});
-    i.onchange = () => { S.rates[d.drug] = i.value === '' ? DEFAULT_RATE(d) : +i.value; store.set('vc_rates', S.rates); render(); };
+    i.onchange = () => { S.rates[d.drug] = i.value === '' ? DEFAULT_RATE(d) : +i.value; store.set('vc_rates_v3', S.rates); render(); };
     return el('label', {class:'row', style:'justify-content:space-between;font-size:13.5px;border-bottom:1px solid #EDF1F4;padding:4px 0'}, el('span', {text:d.drug, style:'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:170px', title:d.drug}), el('span', {style:'white-space:nowrap'}, i, ' %'));
   }));
   drawRoy();
-  const after = () => { store.set('vc_rates', S.rates); drawRoy(); render(); };
+  const after = () => { store.set('vc_rates_v3', S.rates); drawRoy(); render(); };
   const og = document.getElementById('ohgrid');
   const drawOH = () => og.replaceChildren(...Object.keys(S.overhead).map(k => {
     const i = el('input', {type:'number', min:0, step:100, value:S.overhead[k], style:'width:110px', 'aria-label':k});
