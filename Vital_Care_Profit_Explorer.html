@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vital Care West Chester · Profit Explorer</title>
+<style>
+:root{--navy:#0B1F33;--blue:#1F8FC9;--sky:#3CB4E5;--ink:#14212E;--muted:#55636F;--line:#E2E8EE;--bg:#F5F7FA;--card:#fff;--green:#2E9E5B;--amber:#D9971A;--red:#C8453B;--grey:#B9C3CC}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:15px;line-height:1.45}
+header{background:var(--navy);color:#fff;padding:22px 24px}
+header h1{margin:0;font-size:24px;font-weight:700}
+header p{margin:6px 0 0;color:#C9D6E2;font-size:14px}
+.wrap{max-width:1200px;margin:0 auto;padding:20px 16px 60px;display:flex;flex-direction:column;gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.kpi .l{font-size:12.5px;color:var(--muted)}
+.kpi .v{font-size:26px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .n{font-size:12px;color:var(--muted);margin-top:2px}
+h2{font-size:18px;margin:0 0 4px}
+.sub{color:var(--muted);font-size:13.5px;margin:0}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.ctl label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.ctl .hint{font-size:12px;color:var(--muted);margin-top:4px}
+input[type=range]{width:100%;accent-color:var(--blue)}
+select,input[type=search],input[type=number]{width:100%;font:inherit;font-size:14px;padding:9px 10px;border:1px solid #C8D1DA;border-radius:9px;background:#fff;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid #C8D1DA;background:#fff;border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;cursor:pointer;min-height:36px}
+.chip[aria-pressed=true]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.tabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.tab{text-align:left;border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;font:inherit;cursor:pointer;min-height:64px}
+.tab b{display:block;font-size:14px}
+.tab span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.tab[aria-selected=true]{border:2px solid var(--blue);background:#EEF7FC;padding:11px 13px}
+.insight{background:#EEF7FC;border-radius:10px;padding:12px 14px;font-size:14px;margin:12px 0}
+.explain{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:12px}
+.explain div{font-size:13px;color:var(--muted)}
+.explain b{color:var(--ink);display:block;margin-bottom:2px}
+.chartbox{position:relative;width:100%;min-height:300px}
+.chartbox svg{display:block;width:100%;height:auto}
+.chartbox text{font-size:12px;fill:#44525E}
+.chartbox .lbl{fill:var(--ink)}
+.tip{position:absolute;pointer-events:none;background:#fff;border:1px solid #C8D1DA;box-shadow:0 6px 18px rgba(0,0,0,.12);border-radius:8px;padding:8px 10px;font-size:12.5px;white-space:nowrap;z-index:5}
+.tip b{display:block;margin-bottom:2px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted);margin:6px 0 4px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid #C8D1DA;background:#fff;border-radius:9px;padding:9px 14px;font:inherit;font-size:14px;cursor:pointer;min-height:40px}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:nth-child(-n+3),td:nth-child(-n+3){text-align:left}
+th{font-size:12.5px;color:var(--muted);cursor:pointer;user-select:none;position:sticky;top:0;background:#fff}
+th:hover{color:var(--ink)}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600}
+.p-grow{background:#DDF3E6;color:#155C33}.p-watch{background:#FBEFD3;color:#7A5208}.p-screen{background:#F8DEDB;color:#7E231B}
+.neg{color:var(--red)}
+details summary{cursor:pointer;font-weight:600}
+.projin{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:10px}
+.hidden{display:none}
+@media print{.controls,.tabs,.noprint{display:none}body{background:#fff}.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Profit Explorer · Vital Care West Chester</h1>
+  <p>Claims billed January–October 2026. Pick a view, change the assumptions, and every number and chart updates.</p>
+</header>
+<div class="wrap">
+
+  <details class="card noprint" open>
+    <summary>How to use this (30 seconds)</summary>
+    <ol style="margin:10px 0 0;padding-left:20px;font-size:14px">
+      <li><b>Pick a view</b> from the buttons (ranked profit, revenue vs profit, monthly trend, and more).</li>
+      <li><b>Hover or tap</b> any bar or point to see exact numbers.</li>
+      <li><b>Change assumptions</b> (royalty, nursing cost, months, therapy) to see "what if."</li>
+      <li><b>"Kept"</b> means what you keep after paying for the drug, the royalty and the nursing cost you enter. Staff, rent and owner pay are not taken out.</li>
+    </ol>
+  </details>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="card controls noprint" aria-label="Assumptions and filters">
+    <div class="ctl">
+      <label for="roy">Royalty on specialty drugs: <span id="royv"></span></label>
+      <input id="roy" type="range" min="0" max="19" step="0.5" value="10">
+      <div class="hint">Your agreement: 10% for most chronic drugs. Acute items are fixed at 19%.</div>
+    </div>
+    <div class="ctl">
+      <label for="imaavy">Imaavy royalty tier</label>
+      <select id="imaavy"><option value="spec">Same as specialty (today)</option><option value="3">3% Select Specialty (what if corporate agrees)</option></select>
+      <div class="hint">New drugs are usually 3% under section 3.2(c).</div>
+    </div>
+    <div class="ctl">
+      <label for="nurse">Nursing cost per claim: <span id="nursev"></span></label>
+      <input id="nurse" type="range" min="0" max="400" step="10" value="0">
+      <div class="hint">Nursing is mostly unpaid. Try $150–$250 to see real-world margins.</div>
+    </div>
+    <div class="ctl">
+      <label>Months</label>
+      <div class="row"><select id="from" aria-label="From month" style="flex:1"></select><select id="to" aria-label="To month" style="flex:1"></select></div>
+    </div>
+    <div class="ctl" style="grid-column:1/-1">
+      <label>Therapy</label>
+      <div class="chips" id="thchips"></div>
+    </div>
+  </section>
+
+  <section class="tabs noprint" role="tablist" id="tabs"></section>
+
+  <section class="card" id="view">
+    <h2 id="vtitle"></h2>
+    <p class="sub" id="vsub"></p>
+    <div id="vextra"></div>
+    <div class="legend" id="vlegend"></div>
+    <div class="chartbox" id="chart"></div>
+    <div class="insight" id="vinsight"></div>
+    <div class="explain"><div><b>What this shows</b><span id="vwhat"></span></div><div><b>What to look for</b><span id="vlook"></span></div></div>
+  </section>
+
+  <section class="card">
+    <div class="row" style="justify-content:space-between;margin-bottom:10px">
+      <div><h2>Every drug</h2><p class="sub">Click a column to sort. Uses the same assumptions and filters as above.</p></div>
+      <div class="row noprint"><input type="search" id="q" placeholder="Search drugs…" aria-label="Search drugs" style="width:200px"><button class="btn" id="csv">Download CSV</button><button class="btn" id="print">Print / PDF</button></div>
+    </div>
+    <div class="tablewrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <details class="card">
+    <summary>Where these numbers come from</summary>
+    <p class="sub" style="margin-top:10px">Drug cost and expected payment are from the Vital Care profitability report (649 claim lines), matched to drug names from the invoice report (647 matched). Royalty is applied at the rate you choose for specialty and immune globulin lines and 19% for everything else. Premeds and supplies are excluded. "Kept" excludes staff, rent and owner pay. The 3-year paths are a simple model, not a forecast. Confirm with your CPA before making loan or hiring decisions.</p>
+  </details>
+</div>
+
+<script>
+const DATA = [{"drug":"Nucala","therapy":"Pulmonary","rows":[["2026-01",0.0,9.15,0],["2026-01",3617.59,3043.16,1],["2026-03",3617.59,3043.17,1],["2026-04",3617.59,3055.34,1],["2026-02",3617.59,3043.17,1],["2026-05",3617.59,3043.17,1],["2026-06",3617.59,3043.17,1],["2026-07",3689.91,3104.04,1],["2026-08",3689.91,3104.03,1],["2026-09",0.0,2.3,1],["2026-10",0.0,2.3,1],["2026-10",3689.91,3104.03,1],["2026-09",3689.91,3104.03,1],["2026-01",3772.35,3044.38,1],["2026-01",0.0,4.68,1],["2026-01",3617.59,3043.16,1],["2026-02",3618.09,3043.16,1],["2026-02",0.0,4.68,1],["2026-01",3618.09,3105.27,1],["2026-01",3601.38,3105.27,1],["2026-03",3601.38,3043.17,1],["2026-03",3617.59,3043.17,1],["2026-01",11.0,2.44,1],["2026-03",11.0,1.83,1],["2026-03",11.0,1.83,1],["2026-04",11.0,3.7,1],["2026-04",3617.59,3055.34,1],["2026-04",3601.38,3055.34,1],["2026-02",3617.59,3043.17,1],["2026-03",3618.09,3043.17,1],["2026-03",0.0,3.36,1],["2026-04",3682.98,3043.17,1],["2026-04",0.0,3.36,1],["2026-06",3601.38,3043.17,1],["2026-05",3617.59,3043.17,1],["2026-02",3601.38,3043.16,1],["2026-06",3617.59,3043.17,1],["2026-07",3689.91,3104.04,1],["2026-05",3601.38,3043.17,1],["2026-06",0.0,1.13,1],["2026-07",3673.41,3104.04,1],["2026-06",3618.09,3043.17,1],["2026-05",0.0,3.36,1],["2026-08",0.0,4.23,1],["2026-07",11.0,0.04,1],["2026-09",11.0,0.0,1],["2026-08",3673.41,3104.03,1],["2026-08",11.0,0.34,1],["2026-09",0.0,4.23,1],["2026-08",3689.91,3104.03,1],["2026-06",11.0,0.34,1],["2026-07",0.0,1.13,1],["2026-09",3673.41,3104.03,1],["2026-09",3689.91,3104.03,1],["2026-10",0.0,4.23,1],["2026-10",3673.41,3104.03,1],["2026-10",11.0,0.0,1],["2026-05",11.0,1.9,1],["2026-10",3689.91,3104.03,1]]},{"drug":"Xembify","therapy":"Immune globulin","rows":[["2026-09",3070.52,62.07,0],["2026-09",3183.12,5862.4,1],["2026-10",6141.04,5910.86,1],["2026-08",3183.12,2969.01,1],["2026-09",3070.52,5862.4,1],["2026-10",3183.12,5862.4,1],["2026-10",3174.36,5775.18,1],["2026-09",3183.12,55.94,1]]},{"drug":"Saphnelo","therapy":"Anti-inflammatory","rows":[["2026-10",55.5,1.19,0],["2026-01",36.92,20.75,1],["2026-01",46.0,21.96,1],["2026-01",5435.39,5291.77,1],["2026-02",46.0,21.99,1],["2026-03",55.5,21.97,1],["2026-02",5435.39,5291.77,1],["2026-04",5435.39,5291.77,1],["2026-05",5435.39,5291.77,1],["2026-06",5435.39,5291.77,1],["2026-06",55.5,20.86,1],["2026-07",5516.9,5315.18,1],["2026-03",5435.39,5291.77,1],["2026-05",55.5,22.09,1],["2026-05",55.5,20.86,1],["2026-07",55.5,21.18,1],["2026-08",5516.9,5315.18,1],["2026-09",5516.9,5315.18,1],["2026-10",5516.9,5315.18,1]]},{"drug":"Hyqvia","therapy":"Immune globulin","rows":[["2026-01",1268.36,926.94,1],["2026-01",7600.15,5561.61,1],["2026-01",1299.99,926.94,1],["2026-01",7789.97,5561.61,1],["2026-02",7931.18,5561.61,1],["2026-02",1322.49,926.94,1],["2026-03",7789.97,5561.61,1],["2026-03",1299.99,926.94,1],["2026-04",7931.18,5561.61,1],["2026-04",1322.49,926.94,1],["2026-04",1299.99,926.94,1],["2026-04",7789.97,5561.61,1],["2026-03",7931.18,5561.61,1],["2026-03",1322.49,926.94,1],["2026-02",1299.99,926.94,1],["2026-02",7789.97,5561.61,1],["2026-06",1299.99,926.94,1],["2026-06",7789.97,5561.61,1],["2026-04",7931.18,5561.61,1],["2026-04",1322.49,926.94,1],["2026-05",1299.99,926.94,1],["2026-05",7789.97,5561.61,1],["2026-07",1332.47,950.12,1],["2026-06",1299.99,926.94,1],["2026-06",7789.97,5561.61,1],["2026-05",1299.99,926.94,1],["2026-05",7789.97,5561.61,1],["2026-08",7984.8,5700.75,1],["2026-08",1332.47,950.12,1],["2026-09",1355.55,950.12,1],["2026-07",7984.8,5700.75,1],["2026-09",1925.29,1900.24,1],["2026-09",7573.41,7601.0,1],["2026-09",61.65,0.0,1],["2026-10",41.1,0.0,1],["2026-08",1905.97,1900.25,1],["2026-08",524.4,475.06,1],["2026-09",8129.58,5700.75,1],["2026-09",1355.55,950.12,1],["2026-10",8129.58,5700.75,1],["2026-07",7984.8,5700.75,1],["2026-07",1332.47,950.12,1],["2026-08",1332.47,950.12,1],["2026-08",7984.8,5700.75,1],["2026-10",1355.55,950.12,1],["2026-09",1925.29,1900.24,1],["2026-09",7573.41,7601.0,1],["2026-10",5419.97,3800.5,1],["2026-10",4065.16,2850.36,1],["2026-09",1355.55,950.12,1],["2026-09",8129.58,5700.75,1],["2026-10",20.55,0.0,1],["2026-09",8129.58,5700.75,1],["2026-09",20.55,49.38,1],["2026-08",60.55,39.93,0]]},{"drug":"Remicade","therapy":"Anti-inflammatory","rows":[["2026-02",20.55,39.0,1],["2026-03",0.0,0.22,0],["2026-08",25.75,5.08,0],["2026-08",65.19,25.49,0],["2026-09",20.55,22.11,0],["2026-10",35.55,22.11,0],["2026-01",0.0,4.37,1],["2026-01",8006.31,2071.58,1],["2026-01",13685.7,3422.76,1],["2026-01",20.55,20.92,1],["2026-01",0.0,0.0,1],["2026-01",6870.44,1775.64,1],["2026-02",20.55,24.15,1],["2026-03",8006.31,2071.58,1],["2026-01",20.55,23.68,1],["2026-03",11.5,2.92,1],["2026-03",13685.7,3551.28,1],["2026-03",13685.7,3551.28,1],["2026-04",20.55,20.17,1],["2026-02",11.5,2.92,1],["2026-02",13685.7,3551.28,1],["2026-03",20.55,22.22,1],["2026-04",20.55,22.88,1],["2026-06",13738.87,3399.84,1],["2026-06",11.58,1.5,1],["2026-04",6870.44,1775.64,1],["2026-05",13685.7,3399.84,1],["2026-05",11.5,1.5,1],["2026-06",8006.31,1984.14,1],["2026-06",0.0,4.37,1],["2026-06",6870.44,1699.92,1],["2026-07",13738.87,3447.84,1],["2026-07",11.58,1.5,1],["2026-05",13685.7,3399.84,1],["2026-05",11.5,1.5,1],["2026-05",20.55,22.25,1],["2026-07",20.55,22.25,1],["2026-05",20.55,23.6,1],["2026-06",20.55,19.64,1],["2026-07",20.55,22.11,1],["2026-08",11.58,1.5,1],["2026-08",1428.78,1166.85,1],["2026-07",20.55,19.96,1],["2026-08",13738.87,3447.84,1],["2026-07",8037.33,1988.35,1],["2026-07",0.0,4.37,1],["2026-07",26.55,17.52,1],["2026-07",6897.02,1723.92,1],["2026-09",20.55,4.28,1],["2026-09",13738.87,3447.84,1],["2026-09",11.58,4.06,1],["2026-08",1428.78,1150.85,1],["2026-08",1428.78,1150.85,1],["2026-09",11.58,4.06,1],["2026-09",6897.02,1723.92,1],["2026-01",0.0,5.56,0],["2026-01",0.0,5.56,0],["2026-03",0.0,4.96,0],["2026-06",0.0,4.96,0],["2026-07",0.0,0.79,0],["2026-04",0.0,4.96,0]]},{"drug":"Privigen","therapy":"Immune globulin","rows":[["2026-02",11347.79,6848.88,1],["2026-04",11347.79,6848.88,1],["2026-06",11347.79,6848.88,1],["2026-07",11347.79,6849.0,1],["2026-03",11347.79,6848.88,1],["2026-09",11347.79,6848.88,1],["2026-08",11347.79,6848.88,1],["2026-10",11347.79,6849.6,1],["2026-01",11347.79,6848.88,1],["2026-05",11347.79,7190.4,1]]},{"drug":"Gamunex-C","therapy":"Immune globulin","rows":[["2026-10",3777.21,3105.59,1],["2026-10",4272.32,3495.46,1],["2026-10",3702.53,3088.29,1],["2026-09",3766.92,3118.24,1]]},{"drug":"Entyvio","therapy":"Anti-inflammatory","rows":[["2026-08",6466.8,6133.95,0],["2026-02",9674.48,6123.6,1],["2026-01",9948.96,6155.35,1],["2026-01",4.83,3.87,1],["2026-03",1.63,2.92,1],["2026-02",50.0,14.45,1],["2026-03",50.0,12.59,1],["2026-01",50.0,14.44,1],["2026-03",4.83,3.87,1],["2026-03",9948.96,6123.59,1],["2026-04",10129.67,6123.6,1],["2026-04",4.83,3.87,1],["2026-05",5.35,3.29,1],["2026-01",9674.48,6123.6,1],["2026-01",1.63,2.92,1],["2026-02",9948.96,6123.6,1],["2026-02",4.83,3.87,1],["2026-04",50.0,13.18,1],["2026-04",9674.48,6073.82,1],["2026-05",50.0,12.51,1],["2026-06",9948.96,6073.82,1],["2026-06",5.35,3.29,1],["2026-02",1.13,2.92,1],["2026-02",9674.48,6123.59,1],["2026-05",9948.96,6073.82,1],["2026-07",9948.96,6143.51,1],["2026-07",5.35,3.29,1],["2026-06",9674.48,6073.82,1],["2026-06",1.13,4.37,1],["2026-05",10129.67,6073.82,1],["2026-05",5.35,3.29,1],["2026-05",50.0,12.56,1],["2026-07",50.0,12.56,1],["2026-04",1.13,4.37,1],["2026-08",9948.96,6143.51,1],["2026-08",5.35,3.29,1],["2026-07",9674.48,6143.51,1],["2026-09",9948.96,6143.51,1],["2026-07",1.15,4.37,1],["2026-08",50.0,0.04,1],["2026-08",6466.8,6141.91,1],["2026-08",6466.8,6141.31,1],["2026-09",50.0,0.04,1],["2026-10",5.35,5.01,1],["2026-10",10129.67,5954.33,1],["2026-09",5.35,5.01,1],["2026-09",9674.48,6143.51,1],["2026-09",1.58,4.06,1],["2026-06",50.0,12.56,1]]},{"drug":"Leqvio","therapy":"Other","rows":[["2026-06",3761.09,3467.56,0]]},{"drug":"Infliximab (unbranded)","therapy":"Anti-inflammatory","rows":[["2026-10",0.0,0.88,0],["2026-02",20.55,443.71,0],["2026-10",3139.3,2011.24,1],["2026-10",11.58,4.06,1],["2026-10",11.58,4.06,1],["2026-10",5342.25,3270.12,1],["2026-10",1759.02,1090.04,1],["2026-10",70.0,0.0,1]]},{"drug":"Skyrizi","therapy":"Anti-inflammatory","rows":[["2026-09",18003.29,16169.88,0],["2026-01",10281.73,8281.0,1],["2026-01",11.5,2.92,1],["2026-02",11.5,2.92,1],["2026-02",20.55,9.29,1],["2026-02",10537.4,8281.0,1],["2026-03",10537.4,8281.0,1],["2026-03",11.5,2.92,1],["2026-02",23458.5,22670.34,1],["2026-03",52.5,8.94,1],["2026-03",23131.41,22670.34,1],["2026-04",23458.5,22670.34,1],["2026-10",23458.5,22884.88,1],["2026-08",23458.5,22884.88,1],["2026-10",10799.46,7791.0,1],["2026-10",11.58,4.06,1],["2026-10",16321.5,15621.65,1],["2026-06",23458.5,22884.88,1]]},{"drug":"Xolair","therapy":"Pulmonary","rows":[["2026-01",6.36,0.0,1],["2026-02",6.49,0.0,1],["2026-03",3054.08,2671.68,1],["2026-04",6.49,0.0,1],["2026-04",6.49,0.0,1],["2026-02",3054.08,2671.68,1],["2026-04",3054.08,2454.39,1],["2026-02",3054.08,2671.68,1],["2026-06",3054.08,2454.39,1],["2026-06",6.49,0.0,1],["2026-05",3054.08,2454.39,1],["2026-04",6.49,0.0,1],["2026-07",6.49,0.0,1],["2026-07",3054.08,2577.76,1],["2026-09",3054.08,3107.53,1],["2026-10",6.49,0.0,1],["2026-09",6.49,0.0,1],["2026-10",6227.53,5159.26,1],["2026-10",2947.91,2579.62,1],["2026-10",3054.08,2579.62,1],["2026-10",10.0,0.0,1],["2026-10",20.55,0.35,1],["2026-05",6.49,0.0,1],["2026-01",324.34,0.0,1],["2026-02",11.0,1.46,1],["2026-01",3045.38,2671.68,1],["2026-03",3045.38,2671.68,1],["2026-04",20.55,1.84,1],["2026-04",3045.38,2454.39,1],["2026-02",405.43,0.0,1],["2026-04",405.43,0.0,1],["2026-04",324.34,0.0,1],["2026-02",3045.38,2671.68,1],["2026-04",3143.51,2454.39,1],["2026-05",11.0,1.6,1],["2026-04",11.0,1.46,1],["2026-06",408.53,0.0,1],["2026-06",3143.51,2454.39,1],["2026-07",3045.38,2577.76,1],["2026-06",3045.38,2454.39,1],["2026-05",20.55,1.84,1],["2026-05",11.0,1.6,1],["2026-04",408.53,0.0,1],["2026-05",3045.38,2454.39,1],["2026-06",11.0,0.04,1],["2026-07",11.0,0.0,1],["2026-07",408.53,0.0,1],["2026-08",3141.35,2577.76,1],["2026-08",20.55,2.09,1],["2026-08",3141.35,2577.76,1],["2026-09",3141.35,2577.76,1],["2026-07",3141.35,2577.76,1],["2026-08",11.0,0.13,1],["2026-10",20.55,0.35,1],["2026-10",3045.38,2579.62,1],["2026-08",3141.35,2577.76,1],["2026-08",3045.38,2577.76,1],["2026-09",11.0,0.13,1],["2026-09",20.55,0.35,1],["2026-10",11.0,0.13,1],["2026-02",11.0,1.45,1],["2026-05",3143.51,2515.75,1],["2026-05",408.53,0.0,1],["2026-09",3045.38,2577.76,1],["2026-10",3141.35,2577.76,1]]},{"drug":"Rituxan","therapy":"Anti-inflammatory","rows":[["2026-01",9246.38,7302.02,1],["2026-01",9246.38,7338.7,1],["2026-01",9246.38,7335.78,1],["2026-01",2.98,2.92,1],["2026-05",9246.38,7241.6,1],["2026-05",9246.38,7241.6,1],["2026-09",9246.38,7154.76,1],["2026-09",9246.38,7157.32,1]]},{"drug":"Avsola","therapy":"Anti-inflammatory","rows":[["2026-02",4640.0,3093.32,1],["2026-04",4640.0,3091.42,1],["2026-04",4640.0,3092.16,1],["2026-07",4640.0,3089.73,1],["2026-09",4640.0,3089.73,1],["2026-06",4640.0,3091.59,1],["2026-10",4640.0,3083.8,1]]},{"drug":"Inflectra","therapy":"Anti-inflammatory","rows":[["2026-01",180.0,0.0,1],["2026-01",2207.53,1897.35,1]]},{"drug":"Ruxience","therapy":"Anti-inflammatory","rows":[["2026-03",55.5,68.71,1],["2026-03",55.5,33.89,1],["2026-02",6799.66,3993.34,1],["2026-02",6799.66,3993.34,1]]},{"drug":"Dupixent","therapy":"Pulmonary","rows":[["2026-09",4127.44,2012.66,1],["2026-09",4127.44,4025.31,1],["2026-10",4127.44,4025.31,1]]},{"drug":"Vyepti","therapy":"Neurology","rows":[["2026-01",6093.15,5765.67,1],["2026-01",60.55,21.99,1],["2026-02",9.95,3.66,1],["2026-02",60.55,10.03,1],["2026-04",5917.58,5955.81,1],["2026-02",6026.3,5952.15,1],["2026-05",6026.3,5952.15,1],["2026-05",9.95,3.66,1],["2026-07",6100.97,6140.34,1],["2026-10",6100.97,6140.34,1],["2026-05",60.55,9.72,1]]},{"drug":"Imaavy","therapy":"Neurology","rows":[["2026-03",1.13,2.34,1],["2026-03",60.55,26.54,1],["2026-03",35.55,0.0,1],["2026-04",1.13,2.34,1],["2026-04",23887.17,23212.8,1],["2026-03",35830.53,34819.2,1],["2026-03",1.13,2.34,1],["2026-04",1.13,2.34,1],["2026-04",23887.17,23212.8,1],["2026-04",35.55,0.9,1],["2026-06",35.55,3.24,1],["2026-06",1.15,2.34,1],["2026-06",23887.17,23212.8,1],["2026-05",35.55,0.0,1],["2026-07",1.15,2.34,1],["2026-03",23887.17,23212.8,1],["2026-07",0.0,0.0,1],["2026-05",35.55,0.9,1],["2026-07",35.55,10.83,1],["2026-05",1.13,2.34,1],["2026-05",23887.17,23214.0,1],["2026-08",1.15,2.34,1],["2026-08",55.5,14.47,1],["2026-08",55.5,2.34,1],["2026-07",24364.9,23212.8,1],["2026-07",1.15,2.34,1],["2026-08",24364.9,23212.8,1],["2026-08",1.15,2.34,1],["2026-09",24364.9,23212.8,1],["2026-07",24364.9,11896.5,1],["2026-08",55.5,16.58,1],["2026-08",55.5,15.98,1],["2026-08",55.5,16.03,1],["2026-08",55.5,30.68,1],["2026-08",55.5,17.21,1],["2026-08",55.5,16.43,1],["2026-08",55.5,16.63,1],["2026-09",55.5,9.57,1],["2026-08",24364.9,23212.8,1],["2026-08",55.5,12.85,1],["2026-08",55.5,9.46,1],["2026-10",55.5,12.1,1],["2026-09",55.5,10.99,1],["2026-09",1.58,4.06,1],["2026-10",55.5,12.1,1],["2026-06",23887.17,23212.8,1],["2026-06",1.15,2.34,1],["2026-10",1.58,4.06,1],["2026-10",24364.9,23677.06,1]]},{"drug":"Fasenra","therapy":"Pulmonary","rows":[["2026-02",5927.61,4718.08,1],["2026-04",5927.61,4603.0,1],["2026-06",5927.61,4603.0,1],["2026-07",5927.61,4603.0,1],["2026-09",5927.61,4603.0,1]]},{"drug":"Prolastin-C","therapy":"Pulmonary","rows":[["2026-03",1758.51,1682.34,1],["2026-04",1962.7,1827.66,1],["2026-04",7443.42,7021.32,1],["2026-05",7443.42,7021.32,1]]},{"drug":"Exdensur","therapy":"Pulmonary","rows":[["2026-06",25586.0,26000.0,1]]}];
+const MONTHS = [...new Set(DATA.flatMap(d => d.rows.map(r => r[0])))].sort();
+const THERAPIES = ['All', ...[...new Set(DATA.map(d => d.therapy))].sort()];
+const C = {green:'#2E9E5B', amber:'#D9971A', red:'#C8453B', navy:'#0B1F33', blue:'#1F8FC9', sky:'#3CB4E5', grey:'#B9C3CC', purple:'#7A5BC7'};
+const VERDICT = {Grow:C.green, Watch:C.amber, Screen:C.red};
+const S = {roy:10, imaavy:'spec', nurse:0, from:MONTHS[0], to:MONTHS[MONTHS.length-1], therapy:'All', view:'rank', sortKey:'kept', sortDir:-1, q:'',
+  pGreen:1, pValue:1000, pFix:true, pSwitch:true, pSalary:100000, drugDetail:'Remicade'};
+const MNAME = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const mlabel = m => MNAME[+m.slice(5)-1] + ' ' + m.slice(2,4);
+const money = v => (v < 0 ? '−$' : '$') + Math.round(Math.abs(v)).toLocaleString();
+const kfmt = v => { const a = Math.abs(v); const s = a >= 1e6 ? (a/1e6).toFixed(2)+'M' : a >= 1000 ? Math.round(a/1000)+'K' : Math.round(a)+''; return (v < 0 ? '−$' : '$') + s; };
+const pct = v => (isFinite(v) ? v.toFixed(1) : '0.0') + '%';
+const el = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) { if (k === 'text') e.textContent = v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v); } kids.forEach(k => k && e.append(k)); return e; };
+const svgEl = (tag, attrs = {}) => { const e = document.createElementNS('http://www.w3.org/2000/svg', tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); return e; };
+
+function royaltyRate(drug, spec) {
+  if (!spec) return 0.19;
+  if (drug === 'Imaavy' && S.imaavy === '3') return 0.03;
+  return S.roy / 100;
+}
+function inRange(m) { return m >= S.from && m <= S.to; }
+function calcDrug(d) {
+  let rev = 0, cogs = 0, roy = 0, claims = 0, lose = 0;
+  for (const [m, e, c, spec] of d.rows) {
+    if (!inRange(m)) continue;
+    const r = e * royaltyRate(d.drug, spec);
+    const n = e > 0 ? S.nurse : 0;
+    rev += e; cogs += c; roy += r;
+    if (e > 0) { claims++; if (e - c - r - n < 0) lose++; }
+  }
+  const nursing = claims * S.nurse;
+  const gross = rev - cogs, kept = gross - roy - nursing;
+  const keptPct = rev ? kept / rev * 100 : 0;
+  return {drug:d.drug, therapy:d.therapy, claims, rev, cogs, gross, grossPct: rev ? gross/rev*100 : 0, roy, nursing, kept, keptPct,
+    avgRev: claims ? rev/claims : 0, avgKept: claims ? kept/claims : 0, lose,
+    verdict: keptPct >= 15 ? 'Grow' : keptPct >= 0 ? 'Watch' : 'Screen'};
+}
+function rows() { return DATA.filter(d => S.therapy === 'All' || d.therapy === S.therapy).map(calcDrug).filter(r => r.rev > 0); }
+function monthly(filterFn = () => true) {
+  const out = MONTHS.filter(inRange).map(m => ({month:m, rev:0, kept:0}));
+  const idx = Object.fromEntries(out.map((o, i) => [o.month, i]));
+  for (const d of DATA) {
+    if (S.therapy !== 'All' && d.therapy !== S.therapy) continue;
+    if (!filterFn(d)) continue;
+    for (const [m, e, c, spec] of d.rows) {
+      if (!(m in idx)) continue;
+      const o = out[idx[m]];
+      o.rev += e; o.kept += e - c - e * royaltyRate(d.drug, spec) - (e > 0 ? S.nurse : 0);
+    }
+  }
+  return out;
+}
+
+// ---------- tooltip ----------
+function tipper(box) {
+  const t = el('div', {class:'tip'}); t.style.display = 'none'; box.append(t);
+  return {
+    show(ev, title, lines) {
+      t.replaceChildren(el('b', {text:title}), ...lines.map(l => el('div', {text:l})));
+      t.style.display = 'block';
+      const r = box.getBoundingClientRect();
+      const cx = (ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left, cy = (ev.touches ? ev.touches[0].clientY : ev.clientY) - r.top;
+      let x = cx + 14; if (x + t.offsetWidth > box.clientWidth) x = Math.max(0, cx - t.offsetWidth - 14);
+      t.style.left = x + 'px'; t.style.top = Math.max(0, cy - 10) + 'px';
+    },
+    hide() { t.style.display = 'none'; }
+  };
+}
+function bindTip(node, tip, title, lines) {
+  node.style.cursor = 'pointer';
+  node.addEventListener('mousemove', e => tip.show(e, title, lines));
+  node.addEventListener('mouseleave', () => tip.hide());
+  node.addEventListener('touchstart', e => { tip.show(e, title, lines); }, {passive:true});
+}
+
+// ---------- chart primitives ----------
+function niceTicks(min, max, n = 5) {
+  if (min === max) { max = min + 1; }
+  const step0 = (max - min) / n, mag = Math.pow(10, Math.floor(Math.log10(step0))), err = step0 / mag;
+  const step = (err >= 7.5 ? 10 : err >= 3.5 ? 5 : err >= 1.5 ? 2 : 1) * mag;
+  const lo = Math.floor(min / step) * step, hi = Math.ceil(max / step) * step, t = [];
+  for (let v = lo; v <= hi + step / 2; v += step) t.push(Math.round(v * 1e6) / 1e6);
+  return t;
+}
+function hbars(box, items, opts = {}) {
+  // items: {label, value, color, tipTitle, tipLines}
+  box.replaceChildren();
+  const W = box.clientWidth || 800, narrow = W < 520, labelW = Math.min(narrow ? 120 : 170, W * 0.34), rowH = opts.rowH || 26;
+  const m = {t:6, r:narrow ? 52 : 70, b:26, l:labelW};
+  const H = items.length * rowH + m.t + m.b;
+  const vals = items.map(i => i.value), ticks = niceTicks(Math.min(0, ...vals), Math.max(0, ...vals), narrow ? 3 : 5);
+  const lo = ticks[0], hi = ticks[ticks.length - 1];
+  const x = v => m.l + (v - lo) / (hi - lo) * (W - m.l - m.r);
+  const svg = svgEl('svg', {viewBox:`0 0 ${W} ${H}`, role:'img', 'aria-label':opts.label || 'Bar chart'});
+  ticks.forEach(t => { svg.append(svgEl('line', {x1:x(t), x2:x(t), y1:m.t, y2:H - m.b, stroke:'#EDF1F4'})); const tx = svgEl('text', {x:x(t), y:H - 8, 'text-anchor':'middle'}); tx.textContent = (opts.fmt || kfmt)(t); svg.append(tx); });
+  svg.append(svgEl('line', {x1:x(0), x2:x(0), y1:m.t, y2:H - m.b, stroke:'#8A97A3'}));
+  const tip = tipper(box);
+  items.forEach((it, i) => {
+    const y = m.t + i * rowH, bh = rowH * 0.66, x0 = x(Math.min(0, it.value)), w = Math.max(1.5, Math.abs(x(it.value) - x(0)));
+    const r = svgEl('rect', {x:x0, y:y + (rowH - bh) / 2, width:w, height:bh, rx:3, fill:it.color});
+    bindTip(r, tip, it.tipTitle || it.label, it.tipLines || [(opts.fmt || kfmt)(it.value)]);
+    const lb = svgEl('text', {x:m.l - 8, y:y + rowH / 2 + 4, 'text-anchor':'end', class:'lbl'}); lb.textContent = it.label.length > 22 && narrow ? it.label.slice(0, 20) + '…' : it.label;
+    const vl = svgEl('text', {x:(it.value >= 0 ? x(it.value) : x(0)) + 5, y:y + rowH / 2 + 4}); vl.textContent = (opts.fmt || kfmt)(it.value);
+    svg.append(r, lb, vl);
+  });
+  box.append(svg);
+}
+function pairedBars(box, items, keys, opts = {}) {
+  // items: {label, values:[...], tipTitle, tipLines}; keys: [{name,color,colorFn}]
+  box.replaceChildren();
+  const W = box.clientWidth || 800, narrow = W < 520, labelW = Math.min(narrow ? 110 : 150, W * 0.32), rowH = 18 * keys.length + 14;
+  const m = {t:6, r:narrow ? 52 : 66, b:26, l:labelW}, H = items.length * rowH + m.t + m.b;
+  const all = items.flatMap(i => i.values), ticks = niceTicks(Math.min(0, ...all), Math.max(0, ...all), narrow ? 3 : 5);
+  const lo = ticks[0], hi = ticks[ticks.length - 1], x = v => m.l + (v - lo) / (hi - lo) * (W - m.l - m.r);
+  const svg = svgEl('svg', {viewBox:`0 0 ${W} ${H}`, role:'img', 'aria-label':opts.label || 'Paired bar chart'});
+  ticks.forEach(t => { svg.append(svgEl('line', {x1:x(t), x2:x(t), y1:m.t, y2:H - m.b, stroke:'#EDF1F4'})); const tx = svgEl('text', {x:x(t), y:H - 8, 'text-anchor':'middle'}); tx.textContent = kfmt(t); svg.append(tx); });
+  svg.append(svgEl('line', {x1:x(0), x2:x(0), y1:m.t, y2:H - m.b, stroke:'#8A97A3'}));
+  const tip = tipper(box);
+  items.forEach((it, i) => {
+    const y0 = m.t + i * rowH + 6;
+    const g = svgEl('g'); bindTip(g, tip, it.tipTitle || it.label, it.tipLines || []);
+    it.values.forEach((v, k) => {
+      const col = keys[k].colorFn ? keys[k].colorFn(v) : keys[k].color;
+      g.append(svgEl('rect', {x:x(Math.min(0, v)), y:y0 + k * 18, width:Math.max(1.5, Math.abs(x(v) - x(0))), height:15, rx:2, fill:col}));
+      const t = svgEl('text', {x:(v >= 0 ? x(v) : x(0)) + 5, y:y0 + k * 18 + 12}); t.textContent = kfmt(v); g.append(t);
+    });
+    const lb = svgEl('text', {x:m.l - 8, y:y0 + rowH / 2 - 2, 'text-anchor':'end', class:'lbl'}); lb.textContent = it.label;
+    svg.append(g, lb);
+  });
+  box.append(svg);
+}
+function lines(box, labels, series, opts = {}) {
+  // series: {name,color,values,dash}
+  box.replaceChildren();
+  const W = box.clientWidth || 800, H = opts.height || 320, m = {t:14, r:34, b:30, l:60};
+  const all = series.flatMap(s => s.values), ticks = niceTicks(Math.min(0, ...all), Math.max(...all, 1), 5);
+  const lo = ticks[0], hi = ticks[ticks.length - 1];
+  const x = i => m.l + (labels.length < 2 ? 0 : i / (labels.length - 1)) * (W - m.l - m.r);
+  const y = v => H - m.b - (v - lo) / (hi - lo) * (H - m.t - m.b);
+  const svg = svgEl('svg', {viewBox:`0 0 ${W} ${H}`, role:'img', 'aria-label':opts.label || 'Line chart'});
+  ticks.forEach(t => { svg.append(svgEl('line', {x1:m.l, x2:W - m.r, y1:y(t), y2:y(t), stroke:t === 0 ? '#8A97A3' : '#EDF1F4'})); const tx = svgEl('text', {x:m.l - 8, y:y(t) + 4, 'text-anchor':'end'}); tx.textContent = kfmt(t); svg.append(tx); });
+  const every = Math.max(1, Math.ceil(labels.length / Math.max(2, Math.floor((W - m.l) / 72))));
+  labels.forEach((l, i) => { if (i % every) return; const tx = svgEl('text', {x:x(i), y:H - 10, 'text-anchor':'middle'}); tx.textContent = l; svg.append(tx); });
+  series.forEach(s => {
+    const d = s.values.map((v, i) => (i ? 'L' : 'M') + x(i) + ' ' + y(v)).join('');
+    svg.append(svgEl('path', {d, fill:'none', stroke:s.color, 'stroke-width':s.dash ? 1.5 : 2.5, 'stroke-dasharray':s.dash ? '6 4' : ''}));
+    if (opts.dots && !s.dash) s.values.forEach((v, i) => svg.append(svgEl('circle', {cx:x(i), cy:y(v), r:3.2, fill:s.color})));
+    if (s.endLabel) { const tx = svgEl('text', {x:W - m.r, y:y(s.values[s.values.length - 1]) - 6, 'text-anchor':'end'}); tx.textContent = s.endLabel; svg.append(tx); }
+  });
+  const tip = tipper(box), guide = svgEl('line', {y1:m.t, y2:H - m.b, stroke:'#8A97A3', visibility:'hidden'}); svg.append(guide);
+  const hit = svgEl('rect', {x:m.l, y:m.t, width:W - m.l - m.r, height:H - m.t - m.b, fill:'transparent'});
+  const move = ev => {
+    const r = box.getBoundingClientRect(), px = ((ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left) * (W / r.width);
+    const i = Math.max(0, Math.min(labels.length - 1, Math.round((px - m.l) / ((W - m.l - m.r) / Math.max(1, labels.length - 1)))));
+    guide.setAttribute('x1', x(i)); guide.setAttribute('x2', x(i)); guide.setAttribute('visibility', 'visible');
+    tip.show(ev, labels[i], series.map(s => s.name + ': ' + money(s.values[i])));
+  };
+  hit.addEventListener('mousemove', move); hit.addEventListener('touchstart', move, {passive:true});
+  hit.addEventListener('mouseleave', () => { guide.setAttribute('visibility', 'hidden'); tip.hide(); });
+  svg.append(hit); box.append(svg);
+}
+function vbars(box, labels, series, opts = {}) {
+  box.replaceChildren();
+  const W = box.clientWidth || 800, H = opts.height || 280, m = {t:12, r:12, b:30, l:60};
+  const all = series.flatMap(s => s.values), ticks = niceTicks(Math.min(0, ...all), Math.max(...all, 1), 5);
+  const lo = ticks[0], hi = ticks[ticks.length - 1], y = v => H - m.b - (v - lo) / (hi - lo) * (H - m.t - m.b);
+  const band = (W - m.l - m.r) / labels.length, bw = band * 0.8 / series.length;
+  const svg = svgEl('svg', {viewBox:`0 0 ${W} ${H}`, role:'img', 'aria-label':opts.label || 'Column chart'});
+  ticks.forEach(t => { svg.append(svgEl('line', {x1:m.l, x2:W - m.r, y1:y(t), y2:y(t), stroke:t === 0 ? '#8A97A3' : '#EDF1F4'})); const tx = svgEl('text', {x:m.l - 8, y:y(t) + 4, 'text-anchor':'end'}); tx.textContent = kfmt(t); svg.append(tx); });
+  const tip = tipper(box);
+  labels.forEach((l, i) => {
+    const g = svgEl('g'); bindTip(g, tip, l, series.map(s => s.name + ': ' + money(s.values[i])));
+    series.forEach((s, k) => { const v = s.values[i]; g.append(svgEl('rect', {x:m.l + i * band + band * 0.1 + k * bw, y:Math.min(y(v), y(0)), width:bw - 1, height:Math.max(1, Math.abs(y(v) - y(0))), rx:2, fill:s.colorFn ? s.colorFn(v) : s.color})); });
+    const tx = svgEl('text', {x:m.l + i * band + band / 2, y:H - 10, 'text-anchor':'middle'}); tx.textContent = l;
+    svg.append(g, tx);
+  });
+  box.append(svg);
+}
+function legend(items) { const L = document.getElementById('vlegend'); L.replaceChildren(...items.map(([c, t, dash]) => el('span', {}, (() => { const s = el('i', {class:'sw'}); if (dash) { s.style.cssText = 'height:0;border-top:2px dashed ' + c + ';width:16px;vertical-align:3px'; } else s.style.background = c; return s; })(), t))); }
+
+// ---------- views ----------
+const VIEWS = [
+  {id:'rank', name:'Profit by drug', desc:'Best to worst, ranked', draw:vRank},
+  {id:'revkept', name:'Revenue vs profit', desc:'Big sellers that keep little', draw:vRevKept},
+  {id:'margin', name:'Margin per $1', desc:'Cents kept per dollar', draw:vMargin},
+  {id:'perclaim', name:'Profit per claim', desc:'Average kept each time', draw:vPerClaim},
+  {id:'therapy', name:'By therapy', desc:'Anti-inflammatory, IG, neuro…', draw:vTherapy},
+  {id:'share', name:'Who makes the money', desc:'Share of all profit', draw:vShare},
+  {id:'monthly', name:'Monthly trend', desc:'Revenue and profit by month', draw:vMonthly},
+  {id:'detail', name:'One drug in detail', desc:'Pick a drug, see its months', draw:vDetail},
+  {id:'proj', name:'3-year paths', desc:'Try growth scenarios', draw:vProj},
+];
+function setText(id, t) { document.getElementById(id).textContent = t; }
+function vRank(box) {
+  const R = rows().sort((a, b) => b.kept - a.kept);
+  legend([[C.green, 'Grow: keeps 15¢+ per $1'], [C.amber, 'Watch: keeps a little'], [C.red, 'Screen: loses money']]);
+  hbars(box, R.map(r => ({label:r.drug, value:r.kept, color:VERDICT[r.verdict], tipLines:[`Kept ${money(r.kept)} (${pct(r.keptPct)})`, `Revenue ${money(r.rev)} · ${r.claims} claims`, `Drug cost ${money(r.cogs)} · Royalty ${money(r.roy)}`]})), {label:'Money kept by drug, ranked'});
+  const top = R[0], losers = R.filter(r => r.kept < 0);
+  setText('vinsight', top ? `${top.drug} keeps the most (${money(top.kept)}). ${losers.length} drug${losers.length === 1 ? '' : 's'} lose money, ${money(losers.reduce((s, r) => s + r.kept, 0))} in total.` : 'No data for these filters.');
+  setText('vwhat', 'Money kept by each drug after drug cost, royalty and nursing, from best to worst.');
+  setText('vlook', 'Long green bars are what to grow. Red bars are drugs to screen at the benefits check or fix with corporate.');
+}
+function vRevKept(box) {
+  const n = +(document.getElementById('topn')?.value || 10);
+  const R = rows().sort((a, b) => b.rev - a.rev).slice(0, n);
+  document.getElementById('vextra').replaceChildren(el('div', {class:'row noprint', style:'margin:8px 0'}, el('label', {for:'topn', text:'Show top', style:'font-size:13px;font-weight:600'}), (() => { const s = el('select', {id:'topn', style:'width:auto'}); [5, 10, 15, 22].forEach(v => s.append(el('option', {value:v, text:v === 22 ? 'all' : v}))); s.value = n > 15 ? 22 : n; s.onchange = render; return s; })(), el('span', {text:'drugs by revenue', style:'font-size:13px;color:#55636F'})));
+  legend([[C.grey, 'Revenue'], [C.sky, 'Kept'], [C.red, 'Lost money']]);
+  pairedBars(box, R.map(r => ({label:r.drug, values:[r.rev, r.kept], tipLines:[`Revenue ${money(r.rev)}`, `Kept ${money(r.kept)} (${pct(r.keptPct)})`]})), [{name:'Revenue', color:C.grey}, {name:'Kept', colorFn:v => v < 0 ? C.red : C.sky}], {label:'Revenue compared with money kept'});
+  const bigLosers = R.filter(r => r.kept <= 0).map(r => r.drug);
+  setText('vinsight', bigLosers.length ? `${bigLosers.join(' and ')} ${bigLosers.length > 1 ? 'are' : 'is'} among your biggest sellers but keep nothing. Revenue is not profit.` : 'Every top seller here keeps money under these assumptions.');
+  setText('vwhat', 'For your biggest drugs by revenue, the grey bar is what you billed and the blue bar is what you kept.');
+  setText('vlook', 'A long grey bar with a tiny or red blue bar is a drug that keeps you busy without paying you.');
+}
+function vMargin(box) {
+  const R = rows().sort((a, b) => b.keptPct - a.keptPct);
+  legend([[C.green, '15¢ or more'], [C.amber, '0–15¢'], [C.red, 'Below zero']]);
+  hbars(box, R.map(r => ({label:r.drug, value:r.keptPct, color:VERDICT[r.verdict], tipLines:[`Keeps ${r.keptPct.toFixed(1)}¢ per $1`, `Gross margin ${pct(r.grossPct)} before royalty`]})), {fmt:v => Math.round(v) + '¢', label:'Cents kept per dollar by drug'});
+  const all = rows(), tr = all.reduce((s, r) => s + r.rev, 0), tk = all.reduce((s, r) => s + r.kept, 0);
+  setText('vinsight', `Across these drugs you keep about ${tr ? (tk / tr * 100).toFixed(1) : 0}¢ of every dollar billed.`);
+  setText('vwhat', 'How many cents each drug keeps out of every dollar it brings in.');
+  setText('vlook', 'Thin margins (under 10¢) turn negative fast once nursing is counted. Try the nursing slider.');
+}
+function vPerClaim(box) {
+  const R = rows().filter(r => r.claims > 0).sort((a, b) => b.avgKept - a.avgKept);
+  legend([[C.green, 'Grow'], [C.amber, 'Watch'], [C.red, 'Screen']]);
+  hbars(box, R.map(r => ({label:r.drug, value:r.avgKept, color:VERDICT[r.verdict], tipLines:[`Average kept per claim ${money(r.avgKept)}`, `Average billed per claim ${money(r.avgRev)}`, `${r.claims} claims`]})), {label:'Average money kept per claim by drug'});
+  const t = R[0]; setText('vinsight', t ? `Each ${t.drug} claim keeps about ${money(t.avgKept)} on average. A claim is roughly one infusion or one delivery.` : '');
+  setText('vwhat', 'The average amount kept every time a drug is billed.');
+  setText('vlook', 'This is what one more patient visit is worth. Use it to judge which referrals are worth chasing.');
+}
+function vTherapy(box) {
+  const by = {};
+  for (const d of DATA) { const r = calcDrug(d); if (!r.rev) continue; const t = by[d.therapy] ||= {rev:0, kept:0}; t.rev += r.rev; t.kept += r.kept; }
+  const T = Object.entries(by).map(([k, v]) => ({label:k, ...v})).sort((a, b) => b.kept - a.kept);
+  legend([[C.grey, 'Revenue'], [C.sky, 'Kept'], [C.red, 'Lost money']]);
+  pairedBars(box, T.map(t => ({label:t.label, values:[t.rev, t.kept], tipLines:[`Revenue ${money(t.rev)}`, `Kept ${money(t.kept)} (${pct(t.rev ? t.kept / t.rev * 100 : 0)})`]})), [{name:'Revenue', color:C.grey}, {name:'Kept', colorFn:v => v < 0 ? C.red : C.sky}], {label:'Revenue and money kept by therapy'});
+  setText('vinsight', T.length ? `${T[0].label} keeps the most (${money(T[0].kept)}). ${T[T.length - 1].label} keeps the least (${money(T[T.length - 1].kept)}).` : '');
+  setText('vwhat', 'Revenue and money kept grouped by therapy type. Ignores the therapy filter so you can compare all of them.');
+  setText('vlook', 'This tells your account executive which kinds of doctors to visit first.');
+}
+function vShare(box) {
+  const R = rows().sort((a, b) => b.kept - a.kept), pos = R.filter(r => r.kept > 0), tot = pos.reduce((s, r) => s + r.kept, 0);
+  legend([[C.navy, 'Share of all money kept (profitable drugs only)']]);
+  hbars(box, pos.map(r => ({label:r.drug, value:tot ? r.kept / tot * 100 : 0, color:C.navy, tipLines:[`${(r.kept / tot * 100).toFixed(1)}% of profit`, `Kept ${money(r.kept)}`]})), {fmt:v => Math.round(v) + '%', label:'Share of total profit by drug'});
+  let c = 0, n = 0; for (const r of pos) { c += r.kept; n++; if (c / tot >= 0.8) break; }
+  setText('vinsight', pos.length ? `Just ${n} drug${n === 1 ? '' : 's'} make 80% of the profit. ${pos[0].drug} alone is ${(pos[0].kept / tot * 100).toFixed(0)}%.` : '');
+  setText('vwhat', 'Each profitable drug’s share of the total money kept.');
+  setText('vlook', 'The more profit sits in one drug, the riskier any change to that drug is. Protect the top ones first.');
+}
+function vMonthly(box) {
+  const M = monthly(), rem = monthly(d => d.drug === 'Remicade');
+  legend([[C.navy, 'Total kept'], [C.sky, 'Kept from Remicade'], [C.grey, 'Revenue ÷ 5 (scaled to fit)']]);
+  lines(box, M.map(m => mlabel(m.month)), [{name:'Total kept', color:C.navy, values:M.map(m => m.kept)}, {name:'Remicade kept', color:C.sky, values:rem.map(m => m.kept)}, {name:'Revenue ÷ 5', color:C.grey, values:M.map(m => m.rev / 5)}], {dots:true, label:'Monthly money kept and revenue'});
+  const last = M[M.length - 1], avg = M.slice(0, -1).reduce((s, m) => s + m.kept, 0) / Math.max(1, M.length - 1);
+  setText('vinsight', last ? `${mlabel(last.month)} kept ${money(last.kept)} versus a ${money(avg)} average for the earlier months.${last.month === '2026-10' ? ' October dropped because Remicade almost stopped billing.' : ''}` : '');
+  setText('vwhat', 'Money kept each month, with Remicade broken out and revenue shown (divided by 5 so it fits on the same scale).');
+  setText('vlook', 'Revenue going up while money kept stays flat means growth is coming from low-profit drugs.');
+}
+function vDetail(box) {
+  const names = DATA.map(d => d.drug).sort();
+  if (!names.includes(S.drugDetail)) S.drugDetail = names[0];
+  const s = el('select', {id:'dd', style:'width:auto;min-width:220px'}); names.forEach(n => s.append(el('option', {value:n, text:n}))); s.value = S.drugDetail; s.onchange = () => { S.drugDetail = s.value; render(); };
+  const d = DATA.find(x => x.drug === S.drugDetail), r = calcDrug(d);
+  const M = monthly(x => x.drug === S.drugDetail);
+  const stat = (l, v, cls = '') => el('div', {class:'kpi'}, el('div', {class:'l', text:l}), el('div', {class:'v ' + cls, text:v, style:'font-size:20px'}));
+  document.getElementById('vextra').replaceChildren(el('div', {class:'row noprint', style:'margin:8px 0'}, el('label', {for:'dd', text:'Drug', style:'font-size:13px;font-weight:600'}), s),
+    el('div', {class:'kpis', style:'margin:8px 0'}, stat('Revenue', money(r.rev)), stat('Kept', money(r.kept), r.kept < 0 ? 'neg' : ''), stat('Per $1', r.keptPct.toFixed(1) + '¢', r.kept < 0 ? 'neg' : ''), stat('Claims', r.claims), stat('Avg kept / claim', money(r.avgKept), r.avgKept < 0 ? 'neg' : ''), stat('Losing claims', r.lose)));
+  legend([[C.grey, 'Revenue'], [C.sky, 'Kept'], [C.red, 'Lost money']]);
+  vbars(box, M.map(m => mlabel(m.month)), [{name:'Revenue', color:C.grey, values:M.map(m => m.rev)}, {name:'Kept', colorFn:v => v < 0 ? C.red : C.sky, values:M.map(m => m.kept)}], {label:'Monthly revenue and money kept for ' + S.drugDetail});
+  setText('vinsight', `${S.drugDetail}: ${r.verdict === 'Grow' ? 'a profitable drug worth growing.' : r.verdict === 'Watch' ? 'thin margin, fine only if it needs little nursing.' : 'loses money under these assumptions. Screen new starts or ask corporate about its royalty tier.'}`);
+  setText('vwhat', 'One drug’s revenue and money kept each month.');
+  setText('vlook', 'Sudden drops can mean a patient stopped, switched drugs or changed insurance.');
+}
+function vProj(box) {
+  const pre = monthly().filter(m => m.month <= '2026-09'), base = pre.reduce((s, m) => s + m.kept, 0) / Math.max(1, pre.length);
+  const rem = monthly(d => d.drug === 'Remicade').filter(m => m.month <= '2026-09'), remAvg = rem.reduce((s, m) => s + m.kept, 0) / Math.max(1, rem.length);
+  const losers = rows().filter(r => r.kept < 0).reduce((s, r) => s + r.kept, 0), nMonths = MONTHS.filter(inRange).length || 1, fixGain = -losers / nMonths;
+  const start = base - (S.pSwitch ? remAvg - 2500 : 0);
+  const inp = (id, label, val, attrs, hint) => { const i = el('input', {id, type:'number', value:val, ...attrs}); i.onchange = () => { S[id] = +i.value; render(); }; return el('div', {class:'ctl'}, el('label', {for:id, text:label}), i, el('div', {class:'hint', text:hint})); };
+  const chk = (id, label, hint) => { const c = el('input', {id, type:'checkbox'}); c.checked = S[id]; c.onchange = () => { S[id] = c.checked; render(); }; return el('div', {class:'ctl'}, el('label', {for:id}, c, ' ' + label), el('div', {class:'hint', text:hint})); };
+  document.getElementById('vextra').replaceChildren(el('div', {class:'projin noprint'},
+    inp('pGreen', 'New profitable patients per month', S.pGreen, {min:0, max:5, step:0.5}, 'Each one keeps the amount below every month.'),
+    inp('pValue', 'Kept per new patient per month ($)', S.pValue, {min:0, step:100}, 'About $1,000 blends Remicade, Entyvio, Hyqvia, Privigen.'),
+    inp('pSalary', "Dad's target salary per year ($)", S.pSalary, {min:0, step:5000}, 'Adds a line above break-even.'),
+    chk('pFix', 'Fix money-losing drugs', `Adds back ${money(fixGain)}/month, phased in over 6 months.`),
+    chk('pSwitch', 'October Remicade switch is permanent', `Removes about ${money(remAvg - 2500)}/month.`)));
+  const N = 37, labels = [], sNo = [], sPlan = [], be = [], sal = [];
+  let y = 2026, mo = 11;
+  for (let i = 0; i < N; i++) {
+    labels.push(MNAME[mo - 1] + ' ' + String(y).slice(2));
+    const fix = S.pFix ? fixGain * Math.min(i, 6) / 6 : 0;
+    sNo.push(start); sPlan.push(start + fix + S.pGreen * S.pValue * i); be.push(base); sal.push(base + S.pSalary / 12);
+    if (++mo > 12) { mo = 1; y++; }
+  }
+  legend([[C.red, 'Do nothing'], [C.green, 'Your plan'], ['#55636F', 'Break-even and salary', true]]);
+  lines(box, labels, [{name:'Do nothing', color:C.red, values:sNo}, {name:'Your plan', color:C.green, values:sPlan}, {name:'Break-even', color:'#55636F', values:be, dash:true, endLabel:'Break-even'}, {name:'Break-even + salary', color:'#55636F', values:sal, dash:true, endLabel:'Dad’s salary'}], {height:340, label:'Projected monthly money kept'});
+  const iBE = sPlan.findIndex(v => v >= base), iSal = sPlan.findIndex(v => v >= base + S.pSalary / 12);
+  setText('vinsight', `Starting point: about ${money(start)} kept a month vs. ${money(base)} break-even. ` + (iBE < 0 ? 'Your plan does not reach break-even within 3 years. Try more patients per month.' : iBE === 0 ? 'You start at or above break-even. ' : `Your plan reaches break-even in about ${iBE} months (${labels[iBE]}). `) + (iSal < 0 ? 'It does not reach the salary line within 3 years.' : `It covers the salary in about ${iSal} months (${labels[iSal]}).`));
+  setText('vwhat', 'Monthly money kept over the next 3 years under your choices. Break-even assumes costs match Jan–Sep, when the business broke even.');
+  setText('vlook', 'Where the green line crosses the dashed lines. Every half patient a month moves those dates a lot.');
+}
+
+// ---------- KPIs, table, controls ----------
+function kpis() {
+  const R = rows(), rev = R.reduce((s, r) => s + r.rev, 0), cogs = R.reduce((s, r) => s + r.cogs, 0), roy = R.reduce((s, r) => s + r.roy, 0), nur = R.reduce((s, r) => s + r.nursing, 0), kept = R.reduce((s, r) => s + r.kept, 0), lose = R.reduce((s, r) => s + r.lose, 0), claims = R.reduce((s, r) => s + r.claims, 0);
+  const k = (l, v, n, cls = '') => el('div', {class:'card kpi'}, el('div', {class:'l', text:l}), el('div', {class:'v ' + cls, text:v}), el('div', {class:'n', text:n}));
+  document.getElementById('kpis').replaceChildren(
+    k('Revenue', kfmt(rev), `${mlabel(S.from)} – ${mlabel(S.to)}`), k('Drug cost', kfmt(cogs), rev ? pct(cogs / rev * 100) + ' of revenue' : ''),
+    k('Royalty' + (S.nurse ? ' + nursing' : ''), kfmt(roy + nur), S.nurse ? `${kfmt(roy)} royalty · ${kfmt(nur)} nursing` : 'At your chosen rates'),
+    k('Kept', kfmt(kept), 'Before staff, rent, owner pay', kept < 0 ? 'neg' : ''), k('Kept per $1', rev ? (kept / rev * 100).toFixed(1) + '¢' : '—', 'Of every dollar billed', kept < 0 ? 'neg' : ''),
+    k('Losing claims', `${lose} of ${claims}`, 'Claims that lost money'));
+}
+const COLS = [['drug', 'Drug'], ['therapy', 'Therapy'], ['verdict', 'Call'], ['claims', 'Claims'], ['rev', 'Revenue'], ['cogs', 'Drug cost'], ['grossPct', 'Gross %'], ['roy', 'Royalty'], ['kept', 'Kept'], ['keptPct', 'Kept ¢/$1'], ['avgKept', 'Avg kept / claim'], ['lose', 'Losing claims']];
+function table() {
+  const R = rows().filter(r => r.drug.toLowerCase().includes(S.q.toLowerCase())).sort((a, b) => { const x = a[S.sortKey], y = b[S.sortKey]; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * S.sortDir; });
+  const th = document.querySelector('#tbl thead'), tb = document.querySelector('#tbl tbody');
+  th.replaceChildren(el('tr', {}, ...COLS.map(([k, l]) => el('th', {text:l + (S.sortKey === k ? (S.sortDir > 0 ? ' ▲' : ' ▼') : ''), onclick:() => { if (S.sortKey === k) S.sortDir *= -1; else { S.sortKey = k; S.sortDir = typeof R[0]?.[k] === 'string' ? 1 : -1; } table(); }}))));
+  const fm = {rev:money, cogs:money, roy:money, kept:money, avgKept:money, grossPct:pct, keptPct:v => v.toFixed(1) + '¢'};
+  tb.replaceChildren(...R.map(r => el('tr', {}, ...COLS.map(([k]) => {
+    if (k === 'verdict') return el('td', {}, el('span', {class:'pill p-' + r.verdict.toLowerCase(), text:r.verdict}));
+    const td = el('td', {text:fm[k] ? fm[k](r[k]) : String(r[k])});
+    if ((k === 'kept' || k === 'keptPct' || k === 'avgKept') && r[k] < 0) td.className = 'neg';
+    return td;
+  }))));
+}
+function csv() {
+  const R = rows(), head = COLS.map(c => c[1]);
+  const lines = [head.join(',')].concat(R.map(r => COLS.map(([k]) => typeof r[k] === 'number' ? r[k].toFixed(2) : '"' + String(r[k]).replace(/"/g, '""') + '"').join(',')));
+  const a = el('a', {href:URL.createObjectURL(new Blob([lines.join('\n')], {type:'text/csv'})), download:'vital-care-drug-profit.csv'}); document.body.append(a); a.click(); a.remove();
+}
+function render() {
+  document.getElementById('royv').textContent = S.roy + '%';
+  document.getElementById('nursev').textContent = '$' + S.nurse;
+  kpis();
+  const v = VIEWS.find(x => x.id === S.view);
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.id === S.view));
+  setText('vtitle', v.name); setText('vsub', v.desc);
+  if (!['revkept', 'detail', 'proj'].includes(S.view)) document.getElementById('vextra').replaceChildren();
+  v.draw(document.getElementById('chart'));
+  table();
+}
+(function init() {
+  const tabs = document.getElementById('tabs');
+  VIEWS.forEach(v => tabs.append(el('button', {class:'tab', role:'tab', 'data-id':v.id, onclick:() => { S.view = v.id; document.getElementById('vextra').replaceChildren(); render(); }}, el('b', {text:v.name}), el('span', {text:v.desc}))));
+  const chips = document.getElementById('thchips');
+  THERAPIES.forEach(t => chips.append(el('button', {class:'chip', 'aria-pressed':t === S.therapy, text:t, onclick:e => { S.therapy = t; chips.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c.textContent === t)); render(); }})));
+  const f = document.getElementById('from'), to = document.getElementById('to');
+  MONTHS.forEach(m => { f.append(el('option', {value:m, text:mlabel(m)})); to.append(el('option', {value:m, text:mlabel(m)})); });
+  f.value = S.from; to.value = S.to;
+  f.onchange = () => { S.from = f.value; if (S.from > S.to) { S.to = S.from; to.value = S.to; } render(); };
+  to.onchange = () => { S.to = to.value; if (S.to < S.from) { S.from = S.to; f.value = S.from; } render(); };
+  const roy = document.getElementById('roy'); roy.oninput = () => { S.roy = +roy.value; render(); };
+  const nurse = document.getElementById('nurse'); nurse.oninput = () => { S.nurse = +nurse.value; render(); };
+  document.getElementById('imaavy').onchange = e => { S.imaavy = e.target.value; render(); };
+  document.getElementById('q').oninput = e => { S.q = e.target.value; table(); };
+  document.getElementById('csv').onclick = csv;
+  document.getElementById('print').onclick = () => window.print();
+  let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(render, 150); });
+  render();
+})();
+</script>
+</body>
+</html>
